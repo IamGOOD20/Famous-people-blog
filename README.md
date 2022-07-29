@@ -1,1 +1,1 @@
-# Djsite
+# Django site
