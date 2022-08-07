@@ -16,6 +16,7 @@ class Stars(models.Model):
       def get_absolute_url(self):
             return reverse('post', kwargs={'post_id': self.pk})
 
+
 class Category(models.Model):
       name = models.CharField(max_length=100, db_index=True)
 
