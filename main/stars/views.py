@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 
@@ -6,18 +6,16 @@ from .models import *
 
 site_map = [
       {'title': 'About site', 'url_name': 'about'},
-      {'title': 'Add article', 'url_name': 'add_article'},
+      {'title': 'Add page', 'url_name': 'add_page'},
       {'title': 'Feedback', 'url_name': 'feedback'},
       {'title': 'Sign in', 'url_name': 'sign_in'}
       ]
 
 def index(request):
       posts = Stars.objects.all()
-      cats = Category.objects.all()
 
       context = {
             'posts': posts,
-            'cats': cats,
             'site_map': site_map,
             'title': 'Main page',
             'cat_selected': 0,
@@ -28,8 +26,8 @@ def index(request):
 def about(request):
       return render(request, 'stars/about.html', {'title': 'About site'})
 
-def add_article(request):
-      return HttpResponse('Add article')
+def add_page(request):
+      return render(request, 'stars/addpage.html', {"site map": site_map, 'title': 'add page'})
 
 def feedback(request):
       return HttpResponse('Feedback')
@@ -37,19 +35,26 @@ def feedback(request):
 def sign_in(request):
       return HttpResponse('Sign in')
 
-def show_post(request, post_id):
-      return HttpResponse(f'Article display with id = {post_id}')
+def show_post(request, post_slug):
+      post = get_object_or_404(Stars, slug=post_slug)
 
-def show_category(request, cat_id):
-      posts = Stars.objects.filter(cat_id=cat_id)
-      cats = Category.objects.all()
+      context = {
+            'post': post,
+            'site_map': site_map,
+            'title': post.title,
+            'cat_selected': post.cat_id,
+            }
+      return render(request, 'stars/post.html', context=context)
+
+def show_category(request, cat_slug):
+      cat = Category.objects.filter(slug=cat_slug)
+      posts = Stars.objects.filter(cat_id=cat[0].id)
 
       context = {
             'posts': posts,
-            'cats': cats,
             'site_map': site_map,
             'title': 'By category',
-            'cat_selected': cat_id,
+            'cat_selected': cat[0].id,
             }
 
       if len(posts) == 0:
