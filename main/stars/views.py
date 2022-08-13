@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-
+from .forms import *
 from .models import *
 
 site_map = [
@@ -27,7 +26,18 @@ def about(request):
       return render(request, 'stars/about.html', {'title': 'About site'})
 
 def add_page(request):
-      return render(request, 'stars/addpage.html', {"site map": site_map, 'title': 'add page'})
+      if request.method == 'POST':
+            form = AddPostForm(request.POST)
+            if form.is_valid():
+                  #print(form.cleaned_data)
+                  try:
+                        Stars.objects.create(**form.cleaned_data)
+                        return redirect('home')
+                  except:
+                        form.add_error(None, 'Page not published')
+      else:
+            form = AddPostForm()
+      return render(request, 'stars/addpage.html', {'form': form, "site map": site_map, 'title': 'Add page'})
 
 def feedback(request):
       return HttpResponse('Feedback')
