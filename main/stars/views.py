@@ -73,6 +73,7 @@ class AddPage(CreateView):
             context['title'] = 'Add page'
             return context
 
+
 def feedback(request):
       return HttpResponse('Feedback')
 
