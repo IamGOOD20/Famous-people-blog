@@ -2,20 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import *
 from .models import *
+from .utils import *
 
-
-
-site_map = [
-      {'title': 'About site', 'url_name': 'about'},
-      {'title': 'Add page', 'url_name': 'add_page'},
-      {'title': 'Feedback', 'url_name': 'feedback'},
-      {'title': 'Sign in', 'url_name': 'sign_in'}
-      ]
-
-class StarsHome(ListView):
+class StarsHome(DataMixen, ListView):
       model = Stars
       template_name = 'stars/index.html'
       context_object_name = 'posts'
@@ -23,10 +16,8 @@ class StarsHome(ListView):
 
       def get_context_data(self, *, object_list=None, **kwargs):
             context = super().get_context_data(**kwargs)
-            context['site_map'] = site_map
-            context['title'] = 'Main page'
-            context['cat_selected'] = 0
-            return context
+            c_def = self.get_user_context(title='Main page')
+            return dict(list(context.items()) + list(c_def.items()))
 
       def get_queryset(self):
             return Stars.objects.filter(is_published=True)
@@ -43,6 +34,10 @@ def index(request):
 
       return render(request, 'stars/index.html', context=context)
 '''
+
+
+
+
 
 
 def about(request):
@@ -62,16 +57,18 @@ def add_page(request):
 
       return render(request, 'stars/addpage.html', {'form': form, "site map": site_map, 'title': 'Add page'})
 '''
-class AddPage(CreateView):
+class AddPage(LoginRequiredMixin, DataMixen, CreateView):
       form_class = AddPostForm
       template_name = 'stars/addpage.html'
       success_url = reverse_lazy('home')
+      login_url = reverse_lazy('home')
+      #raise_exception = True # 403
 
       def get_context_data(self, *, object_list=None, **kwargs):
             context = super().get_context_data(**kwargs)
-            context['site_map'] = site_map
-            context['title'] = 'Add page'
-            return context
+            c_def = self.get_user_context(title='Add page')
+            return dict(list(context.items()) + list(c_def.items()))
+
 
 def feedback(request):
       return HttpResponse('Feedback')
@@ -91,7 +88,7 @@ def show_post(request, post_slug):
             }
       return render(request, 'stars/post.html', context=context)
 '''
-class ShowPost( DetailView):
+class ShowPost(DataMixen, DetailView):
       model = Stars
       template_name = 'stars/post.html'
       slug_url_kwarg = 'post_slug'
@@ -100,10 +97,8 @@ class ShowPost( DetailView):
 
       def get_context_data(self, *, object_list=None, **kwargs):
             context = super().get_context_data(**kwargs)
-            context['site_map'] = site_map
-            context['title'] = context['post']
-            context['cat_selected'] = 0
-            return context
+            c_def = self.get_user_context(title=context['post'])
+            return dict(list(context.items()) + list(c_def.items()))
 
 '''
 def show_category(request, cat_slug):
@@ -122,7 +117,7 @@ def show_category(request, cat_slug):
 
       return render(request, 'stars/index.html', context=context)
 '''
-class StarsCategory(ListView):
+class StarsCategory(DataMixen, ListView):
       model = Stars
       template_name = 'stars/index.html'
       context_object_name = 'posts'
@@ -133,10 +128,9 @@ class StarsCategory(ListView):
 
       def get_context_data(self, *, object_list=None, **kwargs):
             context = super().get_context_data(**kwargs)
-            context['site_map'] = site_map
-            context['title'] = 'Category - ' + str(context['posts'][0].cat)
-            context['cat_selected'] = context['posts'][0].cat_id
-            return context
+            c_def = self.get_user_context(title='Category - ' + str(context['posts'][0].cat),
+                                          cat_selected = context['posts'][0].cat_id)
+            return dict(list(context.items()) + list(c_def.items()))
 
 def pageNotFound(request, exception):
       return HttpResponseNotFound('<h1>Page not found</h1>')
