@@ -19,7 +19,7 @@ class DataMixen:
                   user_site_map.pop(1)
             #
 
-            context['site_map'] = site_map
+            context['site_map'] = user_site_map
 
             context['cats'] = cats
             if 'cat_selected' not in context:
