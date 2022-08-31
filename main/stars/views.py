@@ -138,3 +138,13 @@ class StarsCategory(DataMixen, ListView):
 
 def pageNotFound(request, exception):
       return HttpResponseNotFound('<h1>Page not found</h1>')
+
+class RegisterUser(DataMixen, CreateView):
+      form_class = RegisterUserForm
+      template_name = 'stars/register.html'
+      success_url = reverse_lazy('login')
+
+      def get_context_data(self, *, object_list=None, **kwargs):
+            context = super().get_context_data(**kwargs)
+            c_def = self.get_user_context(title='Registration')
+            return dict(list(context.items()) + list(c_def.items()))

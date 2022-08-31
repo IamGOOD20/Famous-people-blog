@@ -16,13 +16,10 @@
 		<div class="header">
 			<ul id="mainmenu" class="mainmenu">
 			<li class="logo"><a href="{% url 'home' %}"><div class="logo"></div></a></li>
-{% for m in site_map %}
-	{% if not forloop.last %}
-			<li><a href="{% url m.url_name %}">{{m.title}}</a></li>
-	{% else %}
-			<li class="last"><a href="{% url m.url_name %}">{{m.title}}</a></li>
-	{% endif %}
+{% for way in site_map %}
+			<li><a href="{% url way.url_name %}">{{way.title}}</a></li>
 {% endfor %}
+			<li class="last"><a href="{% url 'register' %}">Sign up</a> | <a href="{% url 'login' %}">Log in</a></li>
 			</ul>
 			<div class="clear"></div>
 		</div>

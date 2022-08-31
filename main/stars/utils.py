@@ -5,7 +5,7 @@ site_map = [
       {'title': 'About site', 'url_name': 'about'},
       {'title': 'Add page', 'url_name': 'add_page'},
       {'title': 'Feedback', 'url_name': 'feedback'},
-      {'title': 'Sign in', 'url_name': 'sign_in'}
+
       ]
 
 class DataMixen:
