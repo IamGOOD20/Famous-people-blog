@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.urls import reverse_lazy
@@ -38,10 +39,13 @@ def index(request):
 
 
 
-
-
 def about(request):
-      return render(request, 'stars/about.html', {'title': 'About site'})
+      contact_list = Stars.objects.all()
+      paginator = Paginator(contact_list, 3)
+
+      page_number = request.GET.get('page')
+      page_obj = paginator.get_page(page_number)
+      return render(request, 'stars/about.html', {'title': 'About site', 'page_obj': page_obj, 'site_map': site_map})
 
 
 '''

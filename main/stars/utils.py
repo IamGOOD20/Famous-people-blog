@@ -9,6 +9,7 @@ site_map = [
       ]
 
 class DataMixen:
+      paginate_by = 2
       def get_user_context(self, **kwargs):
             context = kwargs
             cats = Category.objects.annotate(Count('stars'))

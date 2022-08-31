@@ -20,7 +20,7 @@ class Stars(models.Model):
       class Meta:
             verbose_name = 'Famous people'
             verbose_name_plural = 'Famous people'
-            ordering = ['time_create', 'title']
+            ordering = ['id']
 
 class Category(models.Model):
       name = models.CharField(max_length=100, db_index=True, verbose_name='Category')
