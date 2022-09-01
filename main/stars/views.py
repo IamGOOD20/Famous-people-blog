@@ -1,3 +1,6 @@
+from django.contrib.auth import logout, login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, Http404
@@ -40,12 +43,12 @@ def index(request):
 
 
 def about(request):
-      contact_list = Stars.objects.all()
-      paginator = Paginator(contact_list, 3)
+      #contact_list = Stars.objects.all()
+      #paginator = Paginator(contact_list, 3)
 
-      page_number = request.GET.get('page')
-      page_obj = paginator.get_page(page_number)
-      return render(request, 'stars/about.html', {'title': 'About site', 'page_obj': page_obj, 'site_map': site_map})
+      #page_number = request.GET.get('page')
+      #page_obj = paginator.get_page(page_number)
+      return render(request, 'stars/about.html', {'title': 'About site', 'site_map': site_map}) # 'page_obj': page_obj,
 
 
 '''
@@ -77,8 +80,8 @@ class AddPage(LoginRequiredMixin, DataMixen, CreateView):
 def feedback(request):
       return HttpResponse('Feedback')
 
-def sign_in(request):
-      return HttpResponse('Sign in')
+#def sign_in(request):
+      #return HttpResponse('Sign in')
 
 '''
 def show_post(request, post_slug):
@@ -146,5 +149,27 @@ class RegisterUser(DataMixen, CreateView):
 
       def get_context_data(self, *, object_list=None, **kwargs):
             context = super().get_context_data(**kwargs)
-            c_def = self.get_user_context(title='Registration')
+            c_def = self.get_user_context(title='Create account')
             return dict(list(context.items()) + list(c_def.items()))
+
+      def form_valid(self, form):
+            user = form.save()
+            login(self.request, user)
+            return redirect('home')
+
+class LoginUser(DataMixen, LoginView):
+      form_class = LoginUserForm
+      template_name = 'stars/login.html'
+
+      def get_context_data(self, *, object_list=None, **kwargs):
+            context = super().get_context_data(**kwargs)
+            c_def = self.get_user_context(title='Authorization')
+            return dict(list(context.items()) + list(c_def.items()))
+
+      def get_success_url(self):
+            return reverse_lazy('home')
+
+
+def logout_user(request):
+      logout(request)
+      return redirect('login')

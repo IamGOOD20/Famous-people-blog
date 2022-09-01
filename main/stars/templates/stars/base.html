@@ -19,7 +19,11 @@
 {% for way in site_map %}
 			<li><a href="{% url way.url_name %}">{{way.title}}</a></li>
 {% endfor %}
-			<li class="last"><a href="{% url 'register' %}">Sign up</a> | <a href="{% url 'login' %}">Log in</a></li>
+			{% if request.user.is_authenticated %}
+				<li class="last"> {{ user.username }} | <a href="{% url 'logout' %}">Log out</a></li>
+			{% else %}
+				<li class="last"><a href="{% url 'register' %}">Sign up</a> | <a href="{% url 'login' %}">Log in</a></li>
+			{% endif %}
 			</ul>
 			<div class="clear"></div>
 		</div>
@@ -67,7 +71,7 @@
 
 
 
-
+{% if page_obj.has_other_pages %}
 <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
@@ -86,6 +90,7 @@
     </span>
 </div>
 	</div>
+{% endif %}
 <!-- end content bloc -->
 
 </td></tr></table>
