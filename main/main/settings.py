@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'captcha',
     'stars.apps.StarsConfig',
 
 ]
@@ -145,3 +146,4 @@ CACHES = {
         'LOCATION': os.path.join(BASE_DIR, 'stars_cache'),
     }
 }
+
