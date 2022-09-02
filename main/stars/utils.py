@@ -1,5 +1,5 @@
 from django.db.models import Count
-
+from django.core.cache import cache
 from .models import *
 site_map = [
       {'title': 'About site', 'url_name': 'about'},
@@ -12,7 +12,10 @@ class DataMixen:
       paginate_by = 20
       def get_user_context(self, **kwargs):
             context = kwargs
-            cats = Category.objects.annotate(Count('stars'))
+            cats = cache.get('cats')
+            if not cats:
+                  cats = Category.objects.annotate(Count('stars'))
+                  cache.set('cats', cats, 60)
 
             # hide addpage for not register users
             user_site_map = site_map.copy()
