@@ -108,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru' # en-us # ru-ru
+LANGUAGE_CODE = 'en-us' # en-us # ru-ru
 
 TIME_ZONE = 'UTC'
 
@@ -147,3 +147,6 @@ CACHES = {
     }
 }
 
+RECAPTCHA_PUBLIC_KEY = 'key'
+RECAPTCHA_PRIVATE_KEY = 'secret'
+NOCAPTCHA = True
