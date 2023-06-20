@@ -147,6 +147,7 @@ CACHES = {
     }
 }
 
+
 RECAPTCHA_PUBLIC_KEY = 'key'
 RECAPTCHA_PRIVATE_KEY = 'secret'
 NOCAPTCHA = True
